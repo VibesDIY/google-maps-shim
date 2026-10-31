@@ -124,12 +124,12 @@ them. Place ids look like `osm:node/123`.
 
 ## Where it lives
 
-This repo is published automatically from
-[`vibes.diy/google-maps-shim`](https://github.com/VibesDIY/vibes.diy/tree/main/vibes.diy/google-maps-shim)
-in the Vibes DIY monorepo, on every merge that touches it. That folder is the
-one copy: the Vibes DIY platform serves it to every map app, and the platform's
-own place search runs the same `src/osm-places.ts`. Issues are welcome here;
-pull requests go to [VibesDIY/vibes.diy](https://github.com/VibesDIY/vibes.diy).
+This repo is published automatically from the Vibes DIY monorepo on every
+change to the library there. That copy is the one we edit: the Vibes DIY
+platform serves it to every map app, and the platform's own place search runs
+the same `src/osm-places.ts`. Issues and pull requests are welcome here. A
+merged pull request is carried into the monorepo by hand, because the next
+publish replaces this tree.
 
 `standalone.ts` is this library's entry. `index.ts` is the Vibes DIY entry,
 where the platform picks Google or free per page and meters Google's bill.
