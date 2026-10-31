@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cafés near you, on the free map</title>
+    <!-- The whole trick: Google's loader specifier, pointed at the shim. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "@googlemaps/js-api-loader": "https://cdn.jsdelivr.net/gh/VibesDIY/google-maps-shim@main/dist/google-maps-shim.js"
+        }
+      }
+    </script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        font-family: system-ui, sans-serif;
+      }
+      #map {
+        position: absolute;
+        inset: 0;
+      }
+      #note {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        z-index: 1;
+        background: #fff;
+        padding: 8px 12px;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px #0003;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="note">Finding cafés…</div>
+    <script type="module">
+      // Ordinary Google Maps JavaScript API code. Put a real key in setOptions
+      // and it runs on Google; leave it out and it runs on MapLibre + OpenStreetMap.
+      import { setOptions, importLibrary } from "@googlemaps/js-api-loader";
+
+      setOptions({ v: "weekly" });
+      const { Map, InfoWindow } = await importLibrary("maps");
+      const { AdvancedMarkerElement } = await importLibrary("marker");
+      const { Place } = await importLibrary("places");
+
+      const center = { lat: 45.5197, lng: -122.6786 }; // downtown Portland, Oregon
+      const map = new Map(document.getElementById("map"), { center, zoom: 15, mapId: "DEMO_MAP_ID" });
+      const info = new InfoWindow();
+      const note = document.getElementById("note");
+
+      const { places } = await Place.searchNearby({
+        fields: ["displayName", "location", "formattedAddress", "websiteURI"],
+        locationRestriction: { center, radius: 1200 },
+        includedPrimaryTypes: ["cafe"],
+        maxResultCount: 20,
+      });
+
+      for (const place of places) {
+        const marker = new AdvancedMarkerElement({ map, position: place.location, title: place.displayName });
+        marker.addListener("click", () => {
+          // Place names come from anyone's map edits: build the popup from text, never an HTML string.
+          const card = document.createElement("div");
+          const name = document.createElement("strong");
+          name.textContent = place.displayName;
+          card.append(name, document.createElement("br"), place.formattedAddress ?? "");
+          info.setContent(card);
+          info.open({ map, anchor: marker });
+        });
+      }
+      note.textContent = `${places.length} cafés within 1.2 km`;
+    </script>
+  </body>
+</html>

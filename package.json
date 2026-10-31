@@ -1,0 +1,58 @@
+{
+  "name": "@vibes.diy/google-maps-shim",
+  "version": "0.1.0",
+  "description": "Write plain Google Maps JavaScript API code; get a free MapLibre + OpenStreetMap map when there is no Google key. A drop-in for @googlemaps/js-api-loader.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/google-maps-shim.js",
+  "module": "./dist/google-maps-shim.js",
+  "types": "./dist/google-maps-shim.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/google-maps-shim.d.ts",
+      "default": "./dist/google-maps-shim.js"
+    }
+  },
+  "files": [
+    "dist",
+    "standalone.ts",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "google-maps",
+    "maplibre",
+    "openstreetmap",
+    "places",
+    "js-api-loader",
+    "shim"
+  ],
+  "homepage": "https://github.com/VibesDIY/google-maps-shim#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VibesDIY/google-maps-shim.git"
+  },
+  "bugs": {
+    "url": "https://github.com/VibesDIY/google-maps-shim/issues"
+  },
+  "scripts": {
+    "build": "tsx scripts/build-standalone.ts",
+    "test": "vitest --run",
+    "typecheck": "tsc",
+    "gen": "tsx scripts/gen-vendor.ts"
+  },
+  "dependencies": {
+    "@types/google.maps": "^3.58.1"
+  },
+  "devDependencies": {
+    "@adviser/cement": "^0.5.34",
+    "maplibre-gl": "5.6.0",
+    "vite": "^7.3.7",
+    "vitest": "5.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "@types/node": "^22.0.0"
+  },
+  "generatedFrom": "5867cefa4c313754962ad100a1550cb8df83fb8d"
+}
