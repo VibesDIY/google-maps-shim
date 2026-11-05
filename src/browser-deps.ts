@@ -1,7 +1,8 @@
-import { Map as MapLibreMap, Marker as MapLibreMarker, NavigationControl, Popup } from "maplibre-gl";
+import { Map as MapLibreMap, Marker as MapLibreMarker, NavigationControl, Popup, setWorkerUrl } from "maplibre-gl";
 import type { GoogleMapsShimDeps, RealLoaderModule } from "./loader.js";
 import { createDetachWatch, type ObserverCtor } from "./detach-watch.js";
 import { MAPLIBRE_CSS } from "./maplibre-css.generated.js";
+import { MAPLIBRE_WORKER } from "./maplibre-worker.generated.js";
 import { loadGoogleMapsApi } from "./google-bootstrap.js";
 import type { MapLibrePort } from "./port.js";
 
@@ -10,8 +11,24 @@ import type { MapLibrePort } from "./port.js";
 // real loader for an app that brings its own real key. An entry adds how the
 // page's mode is decided and where place searches go.
 
+// MapLibre 6 finds its worker as `./maplibre-gl-worker.mjs` beside its own
+// module (import.meta.url), and this bundled, served chunk has no such
+// sibling. Its worker source travels inside instead, handed to MapLibre as
+// one blob: URL on the first map (the way MapLibre 5's bundle built its
+// worker), and kept for the page's life: the worker pool is rebuilt from it
+// after every map has been removed.
+let workerUrlSet = false;
+function ensureWorkerUrl(): void {
+  if (workerUrlSet) return;
+  workerUrlSet = true;
+  setWorkerUrl(URL.createObjectURL(new Blob([MAPLIBRE_WORKER], { type: "text/javascript" })));
+}
+
 const maplibre: MapLibrePort = {
-  createMap: (opts) => new MapLibreMap(opts),
+  createMap: (opts) => {
+    ensureWorkerUrl();
+    return new MapLibreMap(opts);
+  },
   createMarker: (element) => new MapLibreMarker({ element, anchor: "bottom" }),
   createPopup: (opts) => new Popup({ closeButton: true, maxWidth: opts.maxWidth, offset: opts.offset }),
   createNavigationControl: () => new NavigationControl({ showCompass: false }),

@@ -136,6 +136,6 @@ where the platform picks Google or free per page and meters Google's bill.
 
 ## License
 
-Apache-2.0. The bundle includes MapLibre GL JS 5.6.0 (BSD-3-Clause; its full
+Apache-2.0. The bundle includes MapLibre GL JS 6.16.0 (BSD-3-Clause; its full
 licence is the exported `licenses` string). Map tiles: [OpenFreeMap](https://openfreemap.org).
 Map data and places © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright) (ODbL).
