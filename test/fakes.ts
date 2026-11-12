@@ -34,8 +34,9 @@ export class FakeElement {
 
   constructor(readonly tagName: string) {}
 
+  /** Like the DOM's: the element's own text, then its descendants' in order. */
   get textContent(): string {
-    return this.#text;
+    return this.#text + this.children.map((c) => c.textContent).join("");
   }
 
   set textContent(v: string) {

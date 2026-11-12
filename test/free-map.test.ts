@@ -102,6 +102,19 @@ describe("Map", () => {
     expect(map.getZoom()).toBe(13);
   });
 
+  it("links the visible credit to the OpenStreetMap copyright page and to OpenFreeMap", async () => {
+    const { maps } = await libs();
+    const div = new FakeElement("div");
+    new maps.Map(div as unknown as HTMLElement, { center: { lat: 45.52, lng: -122.68 }, zoom: 13 });
+    const credit = div.children.find((c) => c.className === "vibes-free-map-attribution");
+    const links = (credit?.children ?? []).filter((c) => c.tagName === "a");
+    const osm = links.find((a) => a.textContent === "© OpenStreetMap contributors");
+    expect(osm?.getAttribute("href")).toBe("https://www.openstreetmap.org/copyright");
+    const ofm = links.find((a) => a.textContent === "© OpenFreeMap");
+    expect(ofm?.getAttribute("href")).toBe("https://openfreemap.org");
+    expect(credit?.textContent).toBe(FREE_MAP_ATTRIBUTION);
+  });
+
   it("uses the dark style when the page prefers dark", async () => {
     const { h, maps } = await libs({ dark: true });
     new maps.Map(el(), { center: { lat: 0, lng: 0 }, zoom: 2 });

@@ -19,6 +19,12 @@ import type { DomPort, LngLatTuple, MapLibrePort, MlMap, MlMapEvent, MlMarker, M
 // throws by name.
 
 export const FREE_MAP_ATTRIBUTION = "© OpenFreeMap · © OpenStreetMap contributors";
+/** The visible credit's parts, in order: each source links to its own page (OSM's names the ODbL terms). */
+const FREE_MAP_CREDITS: readonly { readonly text: string; readonly href: string }[] = [
+  { text: "© OpenFreeMap", href: "https://openfreemap.org" },
+  { text: "© OpenStreetMap contributors", href: "https://www.openstreetmap.org/copyright" },
+];
+const CREDIT_SEPARATOR = " · ";
 export const OPENFREEMAP_LIGHT = "https://tiles.openfreemap.org/styles/positron";
 export const OPENFREEMAP_DARK = "https://tiles.openfreemap.org/styles/dark";
 /** A single pin fitted by fitBounds would otherwise zoom to street level 22. */
@@ -157,7 +163,20 @@ export function createFreeMap(deps: FreeMapDeps) {
         "style",
         "position:absolute;right:4px;bottom:2px;z-index:2;padding:0 4px;font:11px/1.5 system-ui,sans-serif;background:rgba(255,255,255,.75);color:#333;border-radius:3px;pointer-events:auto"
       );
-      credit.textContent = FREE_MAP_ATTRIBUTION;
+      FREE_MAP_CREDITS.forEach(({ text, href }, i) => {
+        if (i > 0) {
+          const sep = deps.document.createElement("span");
+          sep.textContent = CREDIT_SEPARATOR;
+          credit.appendChild(sep);
+        }
+        const link = deps.document.createElement("a");
+        link.setAttribute("href", href);
+        link.setAttribute("target", "_blank");
+        link.setAttribute("rel", "noopener noreferrer");
+        link.setAttribute("style", "color:inherit;text-decoration:none");
+        link.textContent = text;
+        credit.appendChild(link);
+      });
       div.appendChild(credit);
       // Google's Map has no destroy, so apps never call one: the box leaving
       // the page is the end of the map, and MapLibre's WebGL context and
