@@ -3723,7 +3723,12 @@ function l3(e) {
       this.id = n.id, this.#e.add("id");
     }
     /** Copy the requested fields from a platform answer, Google style: unrequested fields stay undefined. */
-    static fromWire(n, a, s, o = "free") {
+    static fromWire({
+      wire: n,
+      fields: a,
+      attribution: s,
+      source: o = "free"
+    }) {
       const l = new t({ id: n.id });
       l.mapMode = o, l.#t = n.openNow;
       const u = n.openingHoursText === void 0 ? null : { weekdayDescriptions: [...n.openingHoursText], periods: [] }, c = {
@@ -3762,7 +3767,9 @@ function l3(e) {
       if (o.isErr()) throw new Error(`Place search failed: ${o.Err().message}`);
       const l = o.Ok();
       if (s === "free" && l.mode === "google") throw new Error("Place search failed: Google places on a free map");
-      return s === "google" && l.mode === "free" && l.places.length > 0 && e.onFreePlacesOnGoogle?.(), { places: l.places.map((u) => t.fromWire(u, a, l.attribution, l.mode)) };
+      return s === "google" && l.mode === "free" && l.places.length > 0 && e.onFreePlacesOnGoogle?.(), {
+        places: l.places.map((u) => t.fromWire({ wire: u, fields: a, attribution: l.attribution, source: l.mode }))
+      };
     }
     /**
      * A place from a search already holds what that search asked for; asking

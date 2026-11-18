@@ -368,7 +368,17 @@ export function createPlacesLibrary(deps: PlacesLibraryDeps) {
     }
 
     /** Copy the requested fields from a platform answer, Google style: unrequested fields stay undefined. */
-    static fromWire(wire: PlaceWire, fields: readonly string[], attribution: string, source: MapMode = "free"): Place {
+    static fromWire({
+      wire,
+      fields,
+      attribution,
+      source = "free",
+    }: {
+      wire: PlaceWire;
+      fields: readonly string[];
+      attribution: string;
+      source?: MapMode;
+    }): Place {
       const place = new Place({ id: wire.id });
       place.mapMode = source;
       place.#openNow = wire.openNow;
@@ -419,7 +429,9 @@ export function createPlacesLibrary(deps: PlacesLibraryDeps) {
       // A free page shows OpenStreetMap places only, whatever comes back: Google's places belong on Google's map.
       if (pageMode === "free" && result.mode === "google") throw new Error("Place search failed: Google places on a free map");
       if (pageMode === "google" && result.mode === "free" && result.places.length > 0) deps.onFreePlacesOnGoogle?.();
-      return { places: result.places.map((p) => Place.fromWire(p, fields, result.attribution, result.mode)) };
+      return {
+        places: result.places.map((p) => Place.fromWire({ wire: p, fields, attribution: result.attribution, source: result.mode })),
+      };
     }
 
     /**
