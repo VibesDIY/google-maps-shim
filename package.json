@@ -48,11 +48,11 @@
   "devDependencies": {
     "@adviser/cement": "^0.5.37",
     "maplibre-gl": "6.16.0",
-    "vite": "^7.3.7",
+    "vite": "^7.3.8",
     "vitest": "5.1.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "@types/node": "^22.0.0"
   },
-  "generatedFrom": "cb5349af75973424edc9e0ce917dcbac1a3103f3"
+  "generatedFrom": "036bc4737607bec716f41c5c465f4fe6d75b0c88"
 }
